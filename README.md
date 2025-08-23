@@ -12,3 +12,6 @@ This frontend is built with **React + Tailwind + animations**, focusing on speed
 - 📊 SEO optimized with analytics & ad integration  
 
 The goal is to provide writers, bloggers, and creators with a **lightweight, extensible platform** that looks great and works fast.
+
+# config
+ESM (import)
