@@ -1,22 +1,35 @@
-import express from "express"
+// backend/src/routes/blogRoutes.js
+import express from "express";
+import multer from "multer";
 import {
   createBlog,
   getBlogs,
   getBlog,
   updateBlog,
   deleteBlog,
-} from "../controllers/blogControllers.js"
-import { authMiddleware } from "../middleware/authMiddleware.js"
+} from "../controllers/blogControllers.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
-const router = express.Router()
+const router = express.Router();
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // saves files in /uploads
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 // Public routes
-router.get("/", getBlogs)
-router.get("/:id", getBlog)
+router.get("/", getBlogs);
+router.get("/:id", getBlog);
 
-// Protected routes
-router.post("/", authMiddleware, createBlog)
-router.put("/:id", authMiddleware, updateBlog)
-router.delete("/:id", authMiddleware, deleteBlog)
+// Protected routes (with image upload on create)
+router.post("/", authMiddleware, upload.single("image"), createBlog);
+router.put("/:id", authMiddleware, updateBlog);
+router.delete("/:id", authMiddleware, deleteBlog);
 
-export default router
+export default router;

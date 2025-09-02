@@ -19,6 +19,7 @@ app.use(helmet());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/uploads", express.static("uploads"));
 
 // DB connection
 mongoose
