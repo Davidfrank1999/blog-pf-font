@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import axios from "axios";
+import api from "@/services/api"; // ✅ use centralized axios instance
 
+// Quill toolbar
 const modules = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
@@ -15,6 +16,7 @@ const modules = {
   ],
 };
 
+// Formats (✅ removed "bullet", just keep "list")
 const formats = [
   "header",
   "bold",
@@ -23,7 +25,6 @@ const formats = [
   "strike",
   "blockquote",
   "list",
-  "bullet",
   "indent",
   "link",
   "image",
@@ -40,6 +41,7 @@ export default function CreateBlog() {
     formState: { errors },
   } = useForm();
 
+  // Image preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -47,6 +49,7 @@ export default function CreateBlog() {
     }
   };
 
+  // Form submit
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -57,19 +60,20 @@ export default function CreateBlog() {
         formData.append("image", data.image[0]);
       }
 
-      const res = await axios.post("http://localhost:4000/api/blogs", formData, {
+      const res = await api.post("/blogs", formData, {
         headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true, // ✅ if using cookies for auth
       });
 
       alert("✅ Blog created successfully!");
       console.log(res.data);
+
+      // reset form
       reset();
       setContent("");
       setImagePreview(null);
     } catch (err) {
-      console.error(err);
-      alert("❌ Failed to create blog");
+      console.error("❌ Blog create failed:", err);
+      alert(err.response?.data?.message || "Failed to create blog. Check console for details.");
     }
   };
 
