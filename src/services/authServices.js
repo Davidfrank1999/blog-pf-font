@@ -1,23 +1,47 @@
-import api from './api';
+import api from "./api";
 
-export const apisignup = async (userData) => {
-    const response = await api.post('/auth/signup', userData);
-    return response.data;
+// --- Signup ---
+export const signupUser = async (userData) => {
+  try {
+    const res = await api.post("/auth/signup", userData);
+    return res.data; // { message, user }
+  } catch (err) {
+    throw err.response?.data || err;
+  }
 };
 
-export const apilogin = async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+// --- Login ---
+export const loginUser = async (credentials) => {
+  try {
+    const res = await api.post("/auth/login", credentials);
+    // Save token for later API calls
+    if (res.data?.token) {
+      localStorage.setItem("token", res.data.token);
+    }
+    return res.data; // { token, user }
+  } catch (err) {
+    throw err.response?.data || err;
+  }
 };
 
-export const apilogout = async () => {
-    const response = await api.post('/auth/logout');
-    return response.data;
+// --- Logout (client-side only) ---
+export const logoutUser = () => {
+  localStorage.removeItem("token");
+  return { message: "Logged out" };
 };
 
+// --- Get Profile ---
 export const getProfile = async () => {
-    const response = await api.get('/auth/profile');
-    return response.data;
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found");
+
+    const res = await api.get("/auth/profile", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return res.data; // { id, email, name, role }
+  } catch (err) {
+    throw err.response?.data || err;
+  }
 };
-
-

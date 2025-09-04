@@ -1,18 +1,19 @@
-import { AuthContext } from '@/context/AuthContext';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useContext } from 'react';
+import { AuthContext } from "@/context/AuthContext";
+import { Navigate, Outlet } from "react-router-dom";
+import { useContext } from "react";
 
-const PrivateRoute = ({roles}) => {
-    const {user} = useContext(AuthContext);
+const PrivateRoute = () => {
+  const { user, loading } = useContext(AuthContext);
 
-    if(!user) {
-        return <Navigate to="/login" />;
-    }
-    if(roles && !roles.includes(user.role)) {
-        return <Navigate to="/" />;
-    }
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
-    return <Outlet />;
-}
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
+};
 
 export default PrivateRoute;
