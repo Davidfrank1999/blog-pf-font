@@ -1,47 +1,42 @@
 import api from "./api";
 
 // --- Signup ---
-export const signupUser = async (userData) => {
+export const apisignupUser = async (userData) => {
   try {
-    const res = await api.post("/auth/signup", userData);
+    const res = await api.post("/auth/register", userData); // make sure backend matches
     return res.data; // { message, user }
   } catch (err) {
-    throw err.response?.data || err;
+    throw err.response?.data?.message || err.message || "Signup failed";
   }
 };
 
 // --- Login ---
-export const loginUser = async (credentials) => {
+3
+export const apiloginUser = async (credentials) => {
   try {
     const res = await api.post("/auth/login", credentials);
-    // Save token for later API calls
-    if (res.data?.token) {
-      localStorage.setItem("token", res.data.token);
+    if (res.data?.accessTokentoken) {
+      localStorage.setItem("accessToken", res.data.accessToken);
     }
     return res.data; // { token, user }
   } catch (err) {
-    throw err.response?.data || err;
+    throw err.response?.data?.message || err.message || "Login failed";
   }
 };
 
-// --- Logout (client-side only) ---
-export const logoutUser = () => {
-  localStorage.removeItem("token");
+// --- Logout ---
+export const apilogoutUser = async () => {
+  localStorage.removeItem("accessToken");
   return { message: "Logged out" };
 };
 
 // --- Get Profile ---
 export const getProfile = async () => {
   try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found");
-
-    const res = await api.get("/auth/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
+    
+    const res = await api.get("/user/getUserProfile"); // token auto-attached via interceptor
     return res.data; // { id, email, name, role }
   } catch (err) {
-    throw err.response?.data || err;
+    throw err.response?.data?.message || err.message || "Failed to fetch profile";
   }
 };
