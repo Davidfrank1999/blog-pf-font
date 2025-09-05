@@ -13,48 +13,76 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Outlet } from "react-router-dom"
 
+import { useEffect, useState } from "react"
+import { getBlogs } from "@/services/blogServices"
+import DashboardLayout from "@/components/layouts/DashboardLayout"
+
+// start here
 export default function DashboardPage() {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const data = await getBlogs()
+        setPosts(data) // expects array from backend
+      } catch (err) {
+        console.error("Failed to fetch blogs", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchBlogs()
+  }, [])
+
+  if (loading) {
+    return (
+      <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Dashboard" }}>
+        <div className="flex justify-center items-center h-64 text-muted-foreground">
+          Loading blogs...
+        </div>
+      </DashboardLayout>
+    )
+  }
+// end here , need to be edited
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-[orientation=vertical]:h-4"
-          />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">components</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">ui</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>button.tsx</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-{/*           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-         */}
-         <Outlet />
-         </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Dashboard" }}>
+      <h1 className="text-3xl font-bold mb-8 tracking-tight">Latest Blogs</h1>
+
+      {posts.length === 0 ? (
+        <p className="text-muted-foreground">No blogs available. Create one to get started!</p>
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <article
+              key={post._id}
+              className="bg-card rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden group border border-border"
+            >
+              <div className="overflow-hidden">
+                <img
+                  src={post.image || "https://source.unsplash.com/600x400/?blog"}
+                  alt={post.title}
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold group-hover:text-primary transition">
+                  {post.title}
+                </h2>
+                <p className="text-muted-foreground mt-2 line-clamp-2">{post.excerpt}</p>
+                <a
+                  href={`/blogs/${post._id}`}
+                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline transition"
+                >
+                  Read more →
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </DashboardLayout>
   )
 }
-

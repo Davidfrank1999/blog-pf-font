@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 // --- Signup ---
 export const apisignupUser = async (userData) => {
@@ -31,6 +31,7 @@ export const apilogoutUser = async () => {
     return response.data;
 };
 
+// --- Get Profile ---
 export const getProfile = async () => {
   try {
     
