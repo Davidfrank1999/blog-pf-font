@@ -13,6 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { Outlet } from "react-router-dom"
 
 export default function DashboardPage() {
 
@@ -48,8 +49,10 @@ export default function DashboardPage() {
             <div className="bg-muted/50 aspect-video rounded-xl" />
             <div className="bg-muted/50 aspect-video rounded-xl" />
           </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
+{/*           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+         */}
+         <Outlet />
+         </div>
       </SidebarInset>
     </SidebarProvider>
   )

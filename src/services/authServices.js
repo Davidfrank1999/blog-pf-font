@@ -1,23 +1,44 @@
 import api from './api';
 
-export const apisignup = async (userData) => {
-    const response = await api.post('/auth/signup', userData);
-    return response.data;
+// --- Signup ---
+export const apisignupUser = async (userData) => {
+  try {
+    const res = await api.post("/auth/register", userData); // make sure backend matches
+    return res.data; // { message, user }
+  } catch (err) {
+    throw err.response?.data?.message || err.message || "Signup failed";
+  }
 };
 
-export const apilogin = async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+// --- Login ---
+3
+export const apiloginUser = async (credentials) => {
+  try {
+    const res = await api.post("/auth/login", credentials);
+    if (res.data?.accessTokentoken) {
+      localStorage.setItem("accessToken", res.data.accessToken);
+    }
+    return res.data; // { token, user }
+  } catch (err) {
+    throw err.response?.data?.message || err.message || "Login failed";
+  }
 };
 
-export const apilogout = async () => {
-    const response = await api.post('/auth/logout');
+// --- Logout ---
+export const apilogoutUser = async () => {
+  localStorage.removeItem("accessToken");
+  const response = await api.post('/auth/logout');
     return response.data;
 };
 
 export const getProfile = async () => {
-    const response = await api.get('/auth/profile');
-    return response.data;
+  try {
+    
+    const res = await api.get("/user/getUserProfile"); // token auto-attached via interceptor
+    return res.data; // { id, email, name, role }
+  } catch (err) {
+    throw err.response?.data?.message || err.message || "Failed to fetch profile";
+  }
 };
 
 
