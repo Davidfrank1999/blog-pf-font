@@ -49,9 +49,11 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/creatblog" element={<CreateBlog />} />
+            {/* <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/creatblog" element={<CreateBlog />} /> */}
           </Route>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/creatblog" element={<CreateBlog />} />
 
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" />} />
