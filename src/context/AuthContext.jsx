@@ -3,14 +3,13 @@ import { createContext, useEffect, useState, useContext } from "react";
 import { loginUser, signupUser, getProfile } from "@/services/authServices";
 import { useNavigate } from "react-router-dom";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+function AuthProvider({ children }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Check token on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -26,7 +25,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ✅ Login
   const login = async ({ email, password }) => {
     try {
       const res = await loginUser({ email, password });
@@ -40,7 +38,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Signup
   const signup = async ({ name, email, password }) => {
     try {
       await signupUser({ name, email, password });
@@ -51,7 +48,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ✅ Logout
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -63,6 +59,12 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => useContext(AuthContext);
+// ✅ Default export
+export default AuthProvider;
+
+// Named hook export
+export function useAuth() {
+  return useContext(AuthContext);
+}

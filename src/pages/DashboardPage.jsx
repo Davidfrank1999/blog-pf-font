@@ -32,7 +32,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Dashboard" }}>
-      <h1 className="text-3xl font-bold mb-8 tracking-tight">Latest Blogs</h1>
+      <h1 className="text-3xl font-bold mb-8 tracking-tight text-chart-2">Latest Blogs</h1>
 
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No blogs available. Create one to get started!</p>
@@ -43,6 +43,7 @@ export default function DashboardPage() {
               key={post._id}
               className="bg-card rounded-xl shadow-sm hover:shadow-lg transition overflow-hidden group border border-border"
             >
+              {/* Blog Image */}
               <div className="overflow-hidden">
                 <img
                   src={post.image || "https://source.unsplash.com/600x400/?blog"}
@@ -50,16 +51,20 @@ export default function DashboardPage() {
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
+
+              {/* Blog Content */}
               <div className="p-6">
-                <h2 className="text-xl font-semibold group-hover:text-primary transition">
+                <h2 className="text-xl font-semibold group-hover:text-chart-2 transition">
                   {post.title}
                 </h2>
                 <p className="text-muted-foreground mt-2 line-clamp-2">{post.excerpt}</p>
+
+                {/* Styled button */}
                 <a
                   href={`/blogs/${post._id}`}
-                  className="inline-block mt-4 text-sm font-medium text-primary hover:underline transition"
+                  className="inline-flex items-center gap-2 px-4 py-2 mt-4 bg-chart-3 text-primary-foreground rounded-lg shadow hover:bg-primary/80 transition no-underline"
                 >
-                  Read more →
+                  Read More →
                 </a>
               </div>
             </article>

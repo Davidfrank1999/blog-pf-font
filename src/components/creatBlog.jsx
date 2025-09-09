@@ -1,10 +1,11 @@
+// src/components/CreateBlog.jsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
-import api from "@/services/api"; // ✅ use centralized axios instance
+import api from "@/services/api";
+import { useNavigate } from "react-router-dom";
 
-// Quill toolbar
 const modules = {
   toolbar: [
     [{ header: [1, 2, 3, false] }],
@@ -16,7 +17,6 @@ const modules = {
   ],
 };
 
-// Formats (✅ removed "bullet", just keep "list")
 const formats = [
   "header",
   "bold",
@@ -33,6 +33,9 @@ const formats = [
 export default function CreateBlog() {
   const [content, setContent] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,7 +44,6 @@ export default function CreateBlog() {
     formState: { errors },
   } = useForm();
 
-  // Image preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,14 +51,16 @@ export default function CreateBlog() {
     }
   };
 
-  // Form submit
   const onSubmit = async (data) => {
     try {
+      setErrorMessage("");
+      setSuccessMessage("");
+
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("excerpt", data.excerpt);
       formData.append("content", content);
-      if (data.image[0]) {
+      if (data.image?.[0]) {
         formData.append("image", data.image[0]);
       }
 
@@ -64,22 +68,38 @@ export default function CreateBlog() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("✅ Blog created successfully!");
-      console.log(res.data);
+      console.log("✅ Blog created:", res.data);
 
-      // reset form
       reset();
       setContent("");
       setImagePreview(null);
+
+      // ✅ Show success message
+      setSuccessMessage("✅ Blog created successfully! Redirecting...");
+
+      // ✅ Redirect after 1.5s
+      setTimeout(() => navigate("/dashboard"), 1500);
     } catch (err) {
-      console.error("❌ Blog create failed:", err);
-      alert(err.response?.data?.message || "Failed to create blog. Check console for details.");
+      console.error("❌ Blog create failed:", err.response?.data || err.message);
+      setErrorMessage(err.response?.data?.message || "❌ Failed to create blog");
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-card shadow-lg rounded-2xl mt-10">
       <h2 className="text-2xl font-bold text-foreground mb-6">✍️ Create New Blog</h2>
+
+      {successMessage && (
+        <div className="mb-4 p-3 text-sm text-green-700 bg-green-100 border border-green-300 rounded-lg">
+          {successMessage}
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className="mb-4 p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg">
+          {errorMessage}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Title */}
@@ -142,7 +162,7 @@ export default function CreateBlog() {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-semibold shadow hover:shadow-lg transition-all"
+          className="w-full bg-chart-2 text-primary-foreground py-3 rounded-xl font-semibold shadow hover:shadow-lg transition-all"
         >
           🚀 Publish Blog
         </button>

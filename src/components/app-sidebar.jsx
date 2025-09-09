@@ -1,11 +1,9 @@
-import * as React from "react"
-import { ChevronRight, File, Folder } from "lucide-react"
-
+import { ChevronRight, FileText, Folder, Settings, Home } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -13,131 +11,98 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { Link, useLocation } from "react-router-dom";
 
-// This is sample data.
-const data = {
-  changes: [
-    {
-      file: "Template",
-      state: "M",
-    },
-    {
-      file: "Cokking Recepies",
-      state: "U",
-    },
-    {
-      file: "Audrino board",
-      state: "M",
-    },
-  ],
-  tree: [
-    [
-      "app",
-      [
-        "api",
-        ["hello", ["route.ts"]],
-        "page.tsx",
-        "layout.tsx",
-        ["blog", ["page.tsx"]],
-      ],
-    ],
-    [
-      "Books",
-      ["Book1", "Book2", "Book3"],
-      "Book list",
-      "To Read",
-    ],
-    ["Tour", ["Map"]],
-    ["Street Food", "Images", "Reviews"],
-    "draft1",
-    "Untitled",
-    "Roadmap",
-    "...",
-    "...",
-    "...",
-  ],
-}
+export function AppSidebar(props) {
+  const location = useLocation();
 
-export function AppSidebar({
-  ...props
-}) {
   return (
     <Sidebar {...props}>
-      <SidebarContent>
+      <SidebarContent className="bg-background/95 backdrop-blur">
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Changes</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-chart-2">Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.changes.map((item, index) => (
-                <SidebarMenuItem key={index}>
-                  <SidebarMenuButton>
-                    <File />
-                    {item.file}
-                  </SidebarMenuButton>
-                  <SidebarMenuBadge>{item.state}</SidebarMenuBadge>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Files</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.tree.map((item, index) => (
-                <Tree key={index} item={item} />
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === "/dashboard"}
+                  className="no-underline"
+                >
+                  <Link to="/dashboard" className="flex items-center gap-2">
+                    <Home className="h-5 w-5" />
+                    Dashboard
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <Collapsible className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90">
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      isActive={location.pathname.startsWith("/posts")}
+                      className="no-underline"
+                    >
+                      <ChevronRight className="transition-transform" />
+                      <Folder className="h-5 w-5" />
+                      Posts
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenu className="pl-6">
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={location.pathname === "/posts"}
+                          className="no-underline"
+                        >
+                          <Link to="/posts" className="flex items-center gap-2">
+                            <FileText className="h-5 w-5" /> All Posts
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                      <SidebarMenuItem>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={location.pathname === "/posts/create"}
+                          className="no-underline"
+                        >
+                          <Link
+                            to="/posts/create"
+                            className="flex items-center gap-2"
+                          >
+                            <FileText className="h-5 w-5" /> Create New
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    </SidebarMenu>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === "/settings"}
+                  className="no-underline"
+                >
+                  <Link to="/settings" className="flex items-center gap-2">
+                    <Settings className="h-5 w-5" />
+                    Settings
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarRail />
     </Sidebar>
-  );
-}
-
-function Tree({
-  item
-}) {
-  const [name, ...items] = Array.isArray(item) ? item : [item]
-
-  if (!items.length) {
-    return (
-      <SidebarMenuButton
-        isActive={name === "button.tsx"}
-        className="data-[active=true]:bg-transparent">
-        <File />
-        {name}
-      </SidebarMenuButton>
-    );
-  }
-
-  return (
-    <SidebarMenuItem>
-      <Collapsible
-        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        defaultOpen={name === "components" || name === "ui"}>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {name}
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {items.map((subItem, index) => (
-              <Tree key={index} item={subItem} />
-            ))}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuItem>
   );
 }
