@@ -1,15 +1,15 @@
-// src/context/AuthContext.jsx
 import { createContext, useEffect, useState, useContext } from "react";
 import { loginUser, signupUser, getProfile } from "@/services/authServices";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext(null);
 
-function AuthProvider({ children }) {
+export function AuthProvider({ children }) {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Check token and fetch profile on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -25,6 +25,7 @@ function AuthProvider({ children }) {
     }
   }, []);
 
+  // 🔹 Login
   const login = async ({ email, password }) => {
     try {
       const res = await loginUser({ email, password });
@@ -38,6 +39,7 @@ function AuthProvider({ children }) {
     }
   };
 
+  // 🔹 Signup
   const signup = async ({ name, email, password }) => {
     try {
       await signupUser({ name, email, password });
@@ -48,6 +50,7 @@ function AuthProvider({ children }) {
     }
   };
 
+  // 🔹 Logout
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -61,10 +64,7 @@ function AuthProvider({ children }) {
   );
 }
 
-// ✅ Default export
-export default AuthProvider;
-
-// Named hook export
+// ✅ Hook for consuming auth
 export function useAuth() {
   return useContext(AuthContext);
 }

@@ -1,15 +1,17 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
-import { useAuth } from "./context/AuthContext"; // ✅ new hook
+import { useAuth } from "./context/AuthContext"; // ✅ named import
 import DashboardPage from "./pages/DashboardPage";
 import CreateBlog from "./components/creatBlog";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import PrivateRoute from "./routes/PrivateRoutes";
+import AdminRoute from "./routes/AdminRoute"; // ✅ centralized admin check
+import AdminDashboard from "./pages/AdminDashboard";
 import { AnimatePresence, motion } from "framer-motion";
 
 function App() {
-  const { user, loading } = useAuth(); // ✅ clean usage
+  const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -31,22 +33,27 @@ function App() {
         className="min-h-screen"
       >
         <Routes location={location} key={location.pathname}>
-          {/* Default route */}
+          {/* Default */}
           <Route
             path="/"
             element={
-              user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
+              user?.id ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
             }
           />
 
-          {/* Public Routes */}
-          <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <Navigate to="/dashboard" replace /> : <SignupPage />} />
+          {/* Public */}
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
+          <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
 
-          {/* Protected Routes */}
+          {/* User Protected */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/creatblog" element={<CreateBlog />} />
+          </Route>
+
+          {/* Admin Protected */}
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
           </Route>
 
           {/* Catch-all */}
