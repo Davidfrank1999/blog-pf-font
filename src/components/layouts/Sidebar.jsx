@@ -12,14 +12,12 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="h-screen w-64 border-r bg-gradient-to-b from-chart-2/10 via-background to-background p-6 flex flex-col shadow-lg">
+    <aside className="h-screen w-64 border-r border-border bg-card p-6 flex flex-col shadow-md">
       {/* Branding */}
       <div className="mb-10">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-chart-2 to-chart-3 bg-clip-text text-transparent">
-          🚀 Zaalima
-        </h1>
+        <h1 className="text-2xl font-bold text-chart-2">MyBlog</h1>
         <p className="text-xs text-muted-foreground mt-1">
-          Your blog control center
+          Control Center
         </p>
       </div>
 
@@ -34,8 +32,8 @@ const Sidebar = () => {
               variant="ghost"
               className={`w-full justify-start rounded-lg no-underline transition-all ${
                 isActive
-                  ? "bg-chart-2/20 text-chart-2 font-medium"
-                  : "hover:bg-chart-3/10 hover:text-chart-3"
+                  ? "bg-chart-2 text-primary-foreground font-semibold shadow"
+                  : "hover:bg-chart-2/10 hover:text-chart-2"
               }`}
             >
               <Link to={to} className="flex items-center gap-2">
@@ -49,8 +47,8 @@ const Sidebar = () => {
 
       {/* Logout */}
       <Button
-        variant="destructive"
-        className="mt-auto justify-start rounded-lg shadow hover:shadow-md transition no-underline"
+        variant="ghost"
+        className="mt-auto justify-start text-red-600 hover:bg-red-100 rounded-lg no-underline"
       >
         <LogOut className="mr-2 h-5 w-5" /> Logout
       </Button>
