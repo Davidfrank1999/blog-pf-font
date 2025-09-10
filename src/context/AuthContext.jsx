@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Check token and fetch profile on mount
+  // Check token + fetch profile on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -25,7 +25,6 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // 🔹 Login
   const login = async ({ email, password }) => {
     try {
       const res = await loginUser({ email, password });
@@ -39,7 +38,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🔹 Signup
   const signup = async ({ name, email, password }) => {
     try {
       await signupUser({ name, email, password });
@@ -50,7 +48,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // 🔹 Logout
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -64,7 +61,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// ✅ Hook for consuming auth
 export function useAuth() {
   return useContext(AuthContext);
 }
