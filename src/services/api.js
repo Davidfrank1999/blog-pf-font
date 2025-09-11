@@ -1,11 +1,12 @@
 // src/services/api.js
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+// ⚡ Use your actual backend port (check your server.js/app.js)
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 30000,
+  timeout: 10000, // shorter timeout for faster fail
   headers: {
     "Content-Type": "application/json",
   },
@@ -17,6 +18,7 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log("📤 API Request:", config.method?.toUpperCase(), config.url, config.data || "");
   return config;
 });
 
@@ -24,14 +26,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
-      const message =
-        err.response?.data?.message || "Unauthorized. Please log in again.";
+    const status = err.response?.status;
+    const message = err.response?.data?.message || err.message;
 
-      // Show alert with backend message
-      alert(`❌ ${message}`);
+    console.error(`❌ API Error [${status}]:`, message);
 
-      // Clear token & redirect
+    if (status === 401) {
+      alert(`❌ Unauthorized: ${message}`);
       localStorage.removeItem("token");
       window.location.href = "/login";
     }

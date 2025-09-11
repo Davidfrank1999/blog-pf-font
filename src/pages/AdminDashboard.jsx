@@ -6,10 +6,11 @@ export default function AdminDashboard() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 🔹 Fetch all blogs for admin
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await api.get("/blogs");
+        const res = await api.get("/blogs/admin/all");
         setBlogs(res.data);
       } catch (err) {
         console.error("❌ Failed to fetch blogs:", err);
@@ -20,15 +21,33 @@ export default function AdminDashboard() {
     fetchBlogs();
   }, []);
 
+  // 🔹 Approve / Reject
   const updateStatus = async (id, status) => {
     try {
       const res = await api.patch(`/blogs/${id}/status`, { status });
+
+      // ✅ Replace full blog object with updated one
       setBlogs((prev) =>
-        prev.map((b) => (b._id === id ? { ...b, status: res.data.status } : b))
+        prev.map((b) => (b._id === id ? { ...b, ...res.data.blog } : b))
       );
     } catch (err) {
       console.error("❌ Failed to update status:", err);
       alert("Failed to update blog status");
+    }
+  };
+
+  // 🔹 Toggle visibility
+  const toggleVisibility = async (id) => {
+    try {
+      const res = await api.patch(`/blogs/${id}/visibility`);
+
+      // ✅ Replace updated blog object
+      setBlogs((prev) =>
+        prev.map((b) => (b._id === id ? { ...b, ...res.data.blog } : b))
+      );
+    } catch (err) {
+      console.error("❌ Failed to toggle visibility:", err);
+      alert("Failed to change blog visibility");
     }
   };
 
@@ -56,6 +75,7 @@ export default function AdminDashboard() {
                 <th className="p-4">Title</th>
                 <th className="p-4">Author</th>
                 <th className="p-4">Status</th>
+                <th className="p-4">Visibility</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -64,7 +84,29 @@ export default function AdminDashboard() {
                 <tr key={blog._id} className="border-t border-border hover:bg-muted/30">
                   <td className="p-4 font-medium">{blog.title}</td>
                   <td className="p-4">{blog.author?.name || "Unknown"}</td>
-                  <td className="p-4 capitalize">{blog.status}</td>
+
+                  {/* ✅ Status column with icons */}
+                  <td className="p-4 capitalize">
+                    {blog.status === "approved" && (
+                      <span className="text-green-600">✅ Approved</span>
+                    )}
+                    {blog.status === "rejected" && (
+                      <span className="text-red-600">❌ Rejected</span>
+                    )}
+                    {blog.status === "pending" && (
+                      <span className="text-yellow-600">⏳ Pending</span>
+                    )}
+                  </td>
+
+                  {/* ✅ Visibility column with icons */}
+                  <td className="p-4">
+                    {blog.visible ? (
+                      <span className="text-green-600">👁️ Visible</span>
+                    ) : (
+                      <span className="text-gray-500">🚫 Hidden</span>
+                    )}
+                  </td>
+
                   <td className="p-4 flex gap-2 justify-end">
                     <button
                       onClick={() => updateStatus(blog._id, "approved")}
@@ -77,6 +119,12 @@ export default function AdminDashboard() {
                       className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
                     >
                       Reject
+                    </button>
+                    <button
+                      onClick={() => toggleVisibility(blog._id)}
+                      className="px-3 py-1 rounded-md bg-yellow-500 text-white hover:bg-yellow-600 transition"
+                    >
+                      {blog.visible ? "Hide" : "Unhide"}
                     </button>
                   </td>
                 </tr>

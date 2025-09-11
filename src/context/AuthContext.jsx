@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check token + fetch profile on mount
+  // 🔹 Check token + fetch profile on mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -25,12 +25,20 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  // 🔹 Login
   const login = async ({ email, password }) => {
     try {
       const res = await loginUser({ email, password });
       localStorage.setItem("token", res.token);
       setUser(res.user);
-      navigate("/dashboard");
+
+      // 🚀 Redirect based on role
+      if (res.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+
       return true;
     } catch (err) {
       console.error("Login failed:", err);
@@ -38,6 +46,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // 🔹 Signup
   const signup = async ({ name, email, password }) => {
     try {
       await signupUser({ name, email, password });
@@ -48,6 +57,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // 🔹 Logout
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -61,6 +71,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// ✅ Hook for consuming auth
 export function useAuth() {
   return useContext(AuthContext);
 }

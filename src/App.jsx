@@ -1,12 +1,12 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
-import { useAuth } from "./context/AuthContext"; // ✅ named import
+import { useAuth } from "./context/AuthContext";
 import DashboardPage from "./pages/DashboardPage";
 import CreateBlog from "./components/creatBlog";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import PrivateRoute from "./routes/PrivateRoutes";
-import AdminRoute from "./routes/AdminRoute"; // ✅ centralized admin check
+import AdminRoute from "./routes/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -22,6 +22,12 @@ function App() {
     );
   }
 
+  // 🔹 Decide redirect based on role
+  const getRedirectPath = () => {
+    if (!user) return "/login";
+    return user.role === "admin" ? "/admin" : "/dashboard";
+  };
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -34,16 +40,17 @@ function App() {
       >
         <Routes location={location} key={location.pathname}>
           {/* Default */}
-          <Route
-            path="/"
-            element={
-              user?.id ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-            }
-          />
+          <Route path="/" element={<Navigate to={getRedirectPath()} replace />} />
 
           {/* Public */}
-          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
+          <Route
+            path="/login"
+            element={user ? <Navigate to={getRedirectPath()} /> : <LoginPage />}
+          />
+          <Route
+            path="/signup"
+            element={user ? <Navigate to={getRedirectPath()} /> : <SignupPage />}
+          />
 
           {/* User Protected */}
           <Route element={<PrivateRoute />}>
