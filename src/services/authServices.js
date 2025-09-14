@@ -3,9 +3,19 @@ import api from "./api";
 // --- Signup ---
 export const signupUser = async (userData) => {
   try {
-    const res = await api.post("/auth/signup", userData);
+    if (!userData?.name || !userData?.email || !userData?.password) {
+      throw new Error("❌ Missing signup fields");
+    }
+
+    console.log("📤 Signup request:", userData);
+
+    const res = await api.post("/auth/signup", userData, {
+      headers: { "Content-Type": "application/json" },
+    });
+
     return res.data; // { message, user }
   } catch (err) {
+    console.error("❌ Signup error:", err.response?.data || err.message);
     throw err.response?.data || err;
   }
 };
@@ -13,13 +23,23 @@ export const signupUser = async (userData) => {
 // --- Login ---
 export const loginUser = async (credentials) => {
   try {
-    const res = await api.post("/auth/login", credentials);
-    // Save token for later API calls
+    if (!credentials?.email || !credentials?.password) {
+      throw new Error("❌ Missing login fields");
+    }
+
+    console.log("📤 Login request:", credentials);
+
+    const res = await api.post("/auth/login", credentials, {
+      headers: { "Content-Type": "application/json" },
+    });
+
     if (res.data?.token) {
       localStorage.setItem("token", res.data.token);
     }
+
     return res.data; // { token, user }
   } catch (err) {
+    console.error("❌ Login error:", err.response?.data || err.message);
     throw err.response?.data || err;
   }
 };
@@ -34,7 +54,7 @@ export const logoutUser = () => {
 export const getProfile = async () => {
   try {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found");
+    if (!token) throw new Error("❌ No token found");
 
     const res = await api.get("/auth/profile", {
       headers: { Authorization: `Bearer ${token}` },
@@ -42,6 +62,7 @@ export const getProfile = async () => {
 
     return res.data; // { id, email, name, role }
   } catch (err) {
+    console.error("❌ Profile error:", err.response?.data || err.message);
     throw err.response?.data || err;
   }
 };

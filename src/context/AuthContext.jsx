@@ -41,7 +41,7 @@ export function AuthProvider({ children }) {
 
       return true;
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("❌ Login failed:", err);
       return false;
     }
   };
@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
       await signupUser({ name, email, password });
       return true;
     } catch (err) {
-      console.error("Signup failed:", err);
+      console.error("❌ Signup failed:", err);
       return false;
     }
   };

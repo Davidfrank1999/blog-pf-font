@@ -1,138 +1,179 @@
 import { useEffect, useState } from "react";
-import api from "@/services/api";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import DashboardLayout from "@/components/layouts/DashboardLayout"; // ✅ reuse layout for navbar + sidebar
 
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const [blogs, setBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all"); // all | pending | approved | rejected
+  const [sort, setSort] = useState("latest"); // latest | oldest
+  const navigate = useNavigate();
 
-  // 🔹 Fetch all blogs for admin
+  // ✅ Fetch all blogs (admin only)
+  const fetchBlogs = async () => {
+    try {
+      const res = await api.get("/blogs/admin/all");
+      setBlogs(res.data);
+      setFilteredBlogs(res.data);
+    } catch (err) {
+      console.error("❌ Failed to fetch blogs:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const res = await api.get("/blogs/admin/all");
-        setBlogs(res.data);
-      } catch (err) {
-        console.error("❌ Failed to fetch blogs:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchBlogs();
   }, []);
 
-  // 🔹 Approve / Reject
-  const updateStatus = async (id, status) => {
-    try {
-      const res = await api.patch(`/blogs/${id}/status`, { status });
+  // ✅ Filter + Sort whenever filter/sort changes
+  useEffect(() => {
+    let updated = [...blogs];
 
-      // ✅ Replace full blog object with updated one
+    if (filter !== "all") {
+      updated = updated.filter((b) => b.status === filter);
+    }
+
+    if (sort === "latest") {
+      updated.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else {
+      updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    }
+
+    setFilteredBlogs(updated);
+  }, [filter, sort, blogs]);
+
+  // ✅ Approve / Reject blog
+  const handleStatusChange = async (id, status) => {
+    try {
+      await api.patch(`/blogs/${id}/status`, { status });
       setBlogs((prev) =>
-        prev.map((b) => (b._id === id ? { ...b, ...res.data.blog } : b))
+        prev.map((b) => (b._id === id ? { ...b, status } : b))
       );
     } catch (err) {
-      console.error("❌ Failed to update status:", err);
-      alert("Failed to update blog status");
+      console.error(`❌ Failed to update blog status:`, err);
     }
   };
 
-  // 🔹 Toggle visibility
-  const toggleVisibility = async (id) => {
+  // ✅ Toggle visibility
+  const handleVisibilityToggle = async (id) => {
     try {
       const res = await api.patch(`/blogs/${id}/visibility`);
-
-      // ✅ Replace updated blog object
+      const updated = res.data.blog;
       setBlogs((prev) =>
-        prev.map((b) => (b._id === id ? { ...b, ...res.data.blog } : b))
+        prev.map((b) => (b._id === id ? { ...b, visible: updated.visible } : b))
       );
     } catch (err) {
-      console.error("❌ Failed to toggle visibility:", err);
-      alert("Failed to change blog visibility");
+      console.error(`❌ Failed to toggle visibility:`, err);
     }
   };
 
-  if (loading) {
-    return (
-      <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Admin" }}>
-        <div className="flex justify-center items-center h-64 text-muted-foreground">
-          Loading blogs...
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
-    <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Admin" }}>
-      <h1 className="text-3xl font-bold mb-8 tracking-tight">Admin Panel</h1>
+    <DashboardLayout
+      breadcrumb={{ parent: "Admin", parentLink: "/admin", current: "Dashboard" }}
+    >
+      <div className="p-6">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+          📊 Admin Dashboard
+        </h1>
 
-      {blogs.length === 0 ? (
-        <p className="text-muted-foreground">No blogs submitted yet.</p>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-muted/50 text-foreground">
-              <tr>
-                <th className="p-4">Title</th>
-                <th className="p-4">Author</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Visibility</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blogs.map((blog) => (
-                <tr key={blog._id} className="border-t border-border hover:bg-muted/30">
-                  <td className="p-4 font-medium">{blog.title}</td>
-                  <td className="p-4">{blog.author?.name || "Unknown"}</td>
+        {/* 🔹 Filters & Sort */}
+        <div className="flex flex-wrap items-center gap-4 mb-6">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="px-3 py-2 border rounded-lg bg-white text-sm"
+          >
+            <option value="all">All Blogs</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
 
-                  {/* ✅ Status column with icons */}
-                  <td className="p-4 capitalize">
-                    {blog.status === "approved" && (
-                      <span className="text-green-600">✅ Approved</span>
-                    )}
-                    {blog.status === "rejected" && (
-                      <span className="text-red-600">❌ Rejected</span>
-                    )}
-                    {blog.status === "pending" && (
-                      <span className="text-yellow-600">⏳ Pending</span>
-                    )}
-                  </td>
-
-                  {/* ✅ Visibility column with icons */}
-                  <td className="p-4">
-                    {blog.visible ? (
-                      <span className="text-green-600">👁️ Visible</span>
-                    ) : (
-                      <span className="text-gray-500">🚫 Hidden</span>
-                    )}
-                  </td>
-
-                  <td className="p-4 flex gap-2 justify-end">
-                    <button
-                      onClick={() => updateStatus(blog._id, "approved")}
-                      className="px-3 py-1 rounded-md bg-green-500 text-white hover:bg-green-600 transition"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => updateStatus(blog._id, "rejected")}
-                      className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
-                    >
-                      Reject
-                    </button>
-                    <button
-                      onClick={() => toggleVisibility(blog._id)}
-                      className="px-3 py-1 rounded-md bg-yellow-500 text-white hover:bg-yellow-600 transition"
-                    >
-                      {blog.visible ? "Hide" : "Unhide"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="px-3 py-2 border rounded-lg bg-white text-sm"
+          >
+            <option value="latest">Sort by Latest</option>
+            <option value="oldest">Sort by Oldest</option>
+          </select>
         </div>
-      )}
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <p className="text-lg animate-pulse">⏳ Loading blogs...</p>
+          </div>
+        ) : filteredBlogs.length === 0 ? (
+          <p className="text-gray-500">No blogs found.</p>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredBlogs.map((blog) => (
+              <div
+                key={blog._id}
+                className="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200 transition overflow-hidden flex flex-col"
+              >
+                {/* Blog Header */}
+                <div
+                  className="p-4 border-b cursor-pointer hover:bg-gray-50"
+                  onClick={() => navigate(`/admin/blog/${blog._id}`)}
+                >
+                  <h2 className="text-lg font-semibold text-blue-600 truncate">
+                    {blog.title}
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    By {blog.author?.name || "Unknown"}
+                  </p>
+                </div>
+
+                {/* Blog Status */}
+                <div className="px-4 py-2 flex justify-between items-center border-b bg-gray-50">
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded ${
+                      blog.status === "approved"
+                        ? "bg-green-100 text-green-700"
+                        : blog.status === "rejected"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {blog.status.toUpperCase()}
+                  </span>
+                  <span className="text-xs text-gray-600">
+                    {blog.visible ? "👁 Visible" : "🚫 Hidden"}
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-2 p-4 mt-auto">
+                  <button
+                    onClick={() => handleStatusChange(blog._id, "approved")}
+                    className="flex-1 px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange(blog._id, "rejected")}
+                    className="flex-1 px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => handleVisibilityToggle(blog._id)}
+                    className="flex-1 px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-sm"
+                  >
+                    {blog.visible ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   );
-}
+};
+
+export default AdminDashboard;

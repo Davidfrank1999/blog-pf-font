@@ -8,6 +8,7 @@ import SignupPage from "./pages/SignupPage";
 import PrivateRoute from "./routes/PrivateRoutes";
 import AdminRoute from "./routes/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
 
 function App() {
@@ -22,10 +23,11 @@ function App() {
     );
   }
 
-  // 🔹 Decide redirect based on role
-  const getRedirectPath = () => {
-    if (!user) return "/login";
-    return user.role === "admin" ? "/admin" : "/dashboard";
+  // 🔹 Decide where to go if logged in
+  const redirectAfterLogin = () => {
+    if (user?.role === "admin") return <Navigate to="/admin" replace />;
+    if (user) return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/login" replace />;
   };
 
   return (
@@ -39,31 +41,32 @@ function App() {
         className="min-h-screen"
       >
         <Routes location={location} key={location.pathname}>
-          {/* Default */}
-          <Route path="/" element={<Navigate to={getRedirectPath()} replace />} />
+          {/* Root */}
+          <Route path="/" element={redirectAfterLogin()} />
 
-          {/* Public */}
+          {/* Login / Signup */}
           <Route
             path="/login"
-            element={user ? <Navigate to={getRedirectPath()} /> : <LoginPage />}
+            element={user ? redirectAfterLogin() : <LoginPage />}
           />
           <Route
             path="/signup"
-            element={user ? <Navigate to={getRedirectPath()} /> : <SignupPage />}
+            element={user ? redirectAfterLogin() : <SignupPage />}
           />
 
-          {/* User Protected */}
+          {/* User Routes */}
           <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/creatblog" element={<CreateBlog />} />
           </Route>
 
-          {/* Admin Protected */}
+          {/* Admin Routes */}
           <Route element={<AdminRoute />}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/blog/:id" element={<AdminBlogView />} />
           </Route>
 
-          {/* Catch-all */}
+          {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
