@@ -29,3 +29,15 @@ export const deleteBlog = async (id) => {
   const res = await api.delete(`/blogs/${id}`)
   return res.data
 }
+
+// Like blog
+export const likeBlog = async (id) => {
+  const res = await api.post(`/blogs/${id}/like`);
+  return res.data;
+};
+
+// Add comment
+export const commentBlog = async (id, text) => {
+  const res = await api.post(`/blogs/${id}/comment`, { text });
+  return res.data;
+};

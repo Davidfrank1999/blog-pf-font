@@ -10,6 +10,8 @@ import AdminRoute from "./routes/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
+import UserBlogView from "./pages/UserBlogView";
+
 
 function App() {
   const { user, loading } = useAuth();
@@ -56,9 +58,12 @@ function App() {
 
           {/* User Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/creatblog" element={<CreateBlog />} />
+            {/* <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/creatblog" element={<CreateBlog />} /> */}
           </Route>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/creatblog" element={<CreateBlog />} />
+          <Route path="/blogs/:id" element={<UserBlogView />} />
 
           {/* Admin Routes */}
           <Route element={<AdminRoute />}>
