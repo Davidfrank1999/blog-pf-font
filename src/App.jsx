@@ -1,3 +1,4 @@
+// src/App.jsx
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import "./App.css";
 import { useAuth } from "./context/AuthContext";
@@ -12,7 +13,6 @@ import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
 import UserBlogView from "./pages/UserBlogView";
 
-
 function App() {
   const { user, loading } = useAuth();
   const location = useLocation();
@@ -25,10 +25,14 @@ function App() {
     );
   }
 
-  // 🔹 Decide where to go if logged in
+  // ✅ Redirect function
   const redirectAfterLogin = () => {
-    if (user?.role === "admin") return <Navigate to="/admin" replace />;
-    if (user) return <Navigate to="/dashboard" replace />;
+    if (user?.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    }
+    if (user) {
+      return <Navigate to="/dashboard" replace />;
+    }
     return <Navigate to="/login" replace />;
   };
 
@@ -58,12 +62,10 @@ function App() {
 
           {/* User Routes */}
           <Route element={<PrivateRoute />}>
-            {/* <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/creatblog" element={<CreateBlog />} /> */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/creatblog" element={<CreateBlog />} />
+            <Route path="/blogs/:slug" element={<UserBlogView />} />
           </Route>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/creatblog" element={<CreateBlog />} />
-          <Route path="/blogs/:id" element={<UserBlogView />} />
 
           {/* Admin Routes */}
           <Route element={<AdminRoute />}>

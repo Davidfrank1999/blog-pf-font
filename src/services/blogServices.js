@@ -1,42 +1,43 @@
-import api from "./api"
+// src/services/blogServices.js
+import api from "./api";
 
-// Get all blogs
-export const getBlogs = async () => {
-  const res = await api.get("/blogs")
-  return res.data
-}
+// 🔹 Get all blogs (with optional search + tag filters)
+export const getBlogs = async (params = {}) => {
+  const res = await api.get("/blogs", { params });
+  return res.data;
+};
 
-// Get single blog by ID
-export const getBlog = async (id) => {
-  const res = await api.get(`/blogs/${id}`)
-  return res.data
-}
+// 🔹 Get single blog by slug or ID
+export const getBlog = async (slugOrId) => {
+  const res = await api.get(`/blogs/${slugOrId}`);
+  return res.data;
+};
 
-// Create blog
+// 🔹 Create blog
 export const createBlog = async (data) => {
-  const res = await api.post("/blogs", data)
-  return res.data
-}
+  const res = await api.post("/blogs", data);
+  return res.data;
+};
 
-// Update blog
+// 🔹 Update blog
 export const updateBlog = async (id, data) => {
-  const res = await api.put(`/blogs/${id}`, data)
-  return res.data
-}
+  const res = await api.put(`/blogs/${id}`, data);
+  return res.data;
+};
 
-// Delete blog
+// 🔹 Delete blog
 export const deleteBlog = async (id) => {
-  const res = await api.delete(`/blogs/${id}`)
-  return res.data
-}
+  const res = await api.delete(`/blogs/${id}`);
+  return res.data;
+};
 
-// Like blog
+// 🔹 Like blog (still uses ID, not slug)
 export const likeBlog = async (id) => {
   const res = await api.post(`/blogs/${id}/like`);
   return res.data;
 };
 
-// Add comment
+// 🔹 Add comment (still uses ID, not slug)
 export const commentBlog = async (id, text) => {
   const res = await api.post(`/blogs/${id}/comment`, { text });
   return res.data;

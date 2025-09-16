@@ -69,6 +69,7 @@ export default function AdminBlogView() {
     <DashboardLayout
       breadcrumb={{ parent: "Admin", parentLink: "/admin", current: blog.title }}
     >
+      {/* Blog Header */}
       <h1 className="text-2xl font-bold mb-2">{blog.title}</h1>
       <p className="text-muted-foreground mb-4">
         By {blog.author?.name || "Unknown"} |{" "}
@@ -84,6 +85,7 @@ export default function AdminBlogView() {
         | {blog.visible ? "👁️ Visible" : "🚫 Hidden"}
       </p>
 
+      {/* Blog Image */}
       {blog.image && (
         <img
           src={`${import.meta.env.VITE_API_URL}${blog.image}`}
@@ -92,8 +94,42 @@ export default function AdminBlogView() {
         />
       )}
 
+      {/* Blog Content */}
       <p className="text-base leading-relaxed mb-6">{blog.content}</p>
 
+      {/* Likes Section */}
+      <div className="mb-6">
+        <h3 className="font-semibold text-lg">👍 Likes ({blog.likes?.length || 0})</h3>
+        {blog.likes?.length > 0 ? (
+          <ul className="list-disc ml-6 mt-2 space-y-1">
+            {blog.likes.map((user) => (
+              <li key={user._id}>
+                {user.name} <span className="text-gray-500">({user.email})</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted-foreground text-sm mt-1">No likes yet</p>
+        )}
+      </div>
+
+      {/* Comments Section */}
+      <div className="mb-6">
+        <h3 className="font-semibold text-lg">💬 Comments ({blog.comments?.length || 0})</h3>
+        {blog.comments?.length > 0 ? (
+          <ul className="space-y-2 mt-2">
+            {blog.comments.map((c, i) => (
+              <li key={i} className="border p-2 rounded bg-gray-50">
+                <strong>{c.user?.name || "User"}:</strong> {c.text}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted-foreground text-sm mt-1">No comments yet</p>
+        )}
+      </div>
+
+      {/* Action Buttons */}
       <div className="flex gap-3">
         <button
           onClick={() => updateStatus("approved")}
