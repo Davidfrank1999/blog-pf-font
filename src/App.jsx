@@ -13,6 +13,7 @@ import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
 import UserBlogView from "./pages/UserBlogView";
 
+
 function App() {
   const { user, loading } = useAuth();
   const location = useLocation();
