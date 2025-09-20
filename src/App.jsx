@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
 import UserBlogView from "./pages/UserBlogView";
+import ExplorePage from "./pages/ReaderView/ExplorePage";
 
 
 function App() {
@@ -63,16 +64,21 @@ function App() {
 
           {/* User Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
+            
+          </Route>
+          <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/creatblog" element={<CreateBlog />} />
             <Route path="/blogs/:slug" element={<UserBlogView />} />
-          </Route>
+
 
           {/* Admin Routes */}
           <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/blog/:id" element={<AdminBlogView />} />
+            
           </Route>
+          <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/blog/:id" element={<AdminBlogView />} />
+
+            <Route path="/explore" element={<ExplorePage />} />
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />

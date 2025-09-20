@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { Plus, User, FileText, Settings, LogOut, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
-export default function Navbar() {
+export default function Navbar({children}) {
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -33,11 +33,12 @@ export default function Navbar() {
       >
         MyBlog
       </Link>
-
+      <div className="">{children}</div> {/* This is where <Input /> will show */}
+       
       {/* Navigation */}
       <nav className="flex items-center gap-6 text-sm font-medium relative">
         {/* Explore link */}
-        <Link
+         <Link
           to="/explore"
           className="text-primary-foreground hover:opacity-80 transition no-underline"
         >
@@ -80,6 +81,7 @@ export default function Navbar() {
                 >
                   <Settings className="h-4 w-4" /> Settings
                 </Link>
+
                 <button
                   onClick={() => {
                     logout();
