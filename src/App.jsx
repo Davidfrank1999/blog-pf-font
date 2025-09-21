@@ -13,6 +13,7 @@ import AdminBlogView from "./pages/AdminBlogView";
 import { AnimatePresence, motion } from "framer-motion";
 import UserBlogView from "./pages/UserBlogView";
 import ExplorePage from "./pages/ReaderView/ExplorePage";
+import TestSidebar from "./pages/testSidebar";
 
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
             <Route path="/admin/blog/:id" element={<AdminBlogView />} />
 
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/test" element={<TestSidebar />} />
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />

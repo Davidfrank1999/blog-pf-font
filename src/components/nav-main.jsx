@@ -31,7 +31,7 @@ export function NavMain({
             className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton tooltip={item.title} className="bg-transparent border-none shadow-none p-0 m-0 focus:outline-none">
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                   <ChevronRight

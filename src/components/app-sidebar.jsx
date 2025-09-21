@@ -1,151 +1,177 @@
-import { ChevronRight, FileText, Settings, Home, Plus, LogOut } from "lucide-react";
+"use client"
+
+import * as React from "react"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from "lucide-react"
+
+import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
+import { NavUser } from "@/components/nav-user"
+import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { Link, useLocation } from "react-router-dom";
-import TempAvatar from "../assets/react.svg";
-import { NavUser } from "./sidebar/NavUser.jsx"
+} from "@/components/ui/sidebar"
 
-export function AppSidebar(props) {
-  const location = useLocation();
-  const data = {
+// This is sample data.
+const data = {
   user: {
-    name: "Happy",
-    email: "happy@example.com",
-    avatar: TempAvatar,
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
-  }
+  teams: [
+    {
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
+  navMain: [
+    {
+      title: "Playground",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Models",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Genesis",
+          url: "#",
+        },
+        {
+          title: "Explorer",
+          url: "#",
+        },
+        {
+          title: "Quantum",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Documentation",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Introduction",
+          url: "#",
+        },
+        {
+          title: "Get Started",
+          url: "#",
+        },
+        {
+          title: "Tutorials",
+          url: "#",
+        },
+        {
+          title: "Changelog",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
+}
 
-
+export function AppSidebar({
+  ...props
+}) {
   return (
-    <Sidebar {...props} className="list-none" >
+    <Sidebar collapsible="icon" {...props} className="m-0 p-0">
       <SidebarHeader>
-        <div className="p-4 text-sm text-muted-foreground">Here</div>
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent className="bg-chart-2/5 backdrop-blur-md border-r border-border flex flex-col">
-        {/* Branding */}
-        <div className="p-6">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-chart-2 to-chart-3 bg-clip-text text-transparent">
-            🚀 MyBlog
-          </h1>
-          <p className="text-xs text-muted-foreground mt-1">Control Center</p>
-        </div>
-
-        {/* Main Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs uppercase tracking-wide text-muted-foreground px-6 mb-2">
-            Main
-          </SidebarGroupLabel>
-
-          <SidebarGroupContent >
-            <SidebarMenu className="space-y-1 px-2 list-none">
-              {/* Dashboard */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={location.pathname === "/dashboard"}
-                  className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition no-underline data-[active=true]:bg-chart-2/20 data-[active=true]:text-chart-2 hover:bg-chart-2/10 hover:text-chart-2"
-                >
-                  <Link to="/dashboard">
-                    <Home className="h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              {/* Posts Collapsible */}
-              <SidebarMenuItem>
-                <Collapsible className="group/collapsible">
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition no-underline hover:bg-chart-2/10 hover:text-chart-2 data-[active=true]:bg-chart-2/20 data-[active=true]:text-chart-2"
-                      isActive={location.pathname.startsWith("/posts")}
-                    >
-                      <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                      <FileText className="h-4 w-4" />
-                      Posts
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenu className="pl-9 mt-1 space-y-1 list-none">
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={location.pathname === "/posts"}
-                          className="flex items-center gap-2 px-3 py-2 rounded-md text-sm transition no-underline hover:bg-muted data-[active=true]:bg-muted data-[active=true]:text-foreground"
-                        >
-                          <Link to="/posts">All Posts</Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                      <SidebarMenuItem>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={location.pathname === "/posts/create"}
-                          className="flex items-center gap-2 px-3 py-2 rounded-md text-sm transition no-underline hover:bg-muted data-[active=true]:bg-muted data-[active=true]:text-foreground"
-                        >
-                          <Link to="/posts/create">
-                            <Plus className="h-4 w-4" /> Create New
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    </SidebarMenu>
-                  </CollapsibleContent>
-                </Collapsible>
-              </SidebarMenuItem>
-
-              {/* Settings */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={location.pathname === "/settings"}
-                  className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition no-underline hover:bg-chart-2/10 hover:text-chart-2 data-[active=true]:bg-chart-2/20 data-[active=true]:text-chart-2"
-                >
-                  <Link to="/settings">
-                    <Settings className="h-4 w-4 list-none" />
-                    Settings
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Logout at bottom */}
-        <div className="mt-auto p-6">
-          <SidebarMenu className="list-none">
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-100 transition no-underline"
-              >
-                <Link to="/logout">
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </div>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
-      <SidebarFooter className="list-none">
-        <NavUser user={data.user}/>
+      <SidebarFooter>
+        <NavUser user={data.user} />
       </SidebarFooter>
-      <SidebarRail></SidebarRail>
+      <SidebarRail className="bg-transparent border-none shadow-none p-0 m-0"/>
     </Sidebar>
   );
 }
