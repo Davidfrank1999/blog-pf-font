@@ -13,6 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { Outlet } from "react-router-dom"
 
 export default function TestSidebar() {
   return (
@@ -49,6 +50,7 @@ export default function TestSidebar() {
           </div>
           <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
         </div>
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   )

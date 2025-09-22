@@ -6,7 +6,13 @@ export default {
     "./src/App.css", // 👈 Add this since you’re using App.css
   ],
   theme: {
-    extend: {},
+    extend: {
+      olors: {
+				...blackA,
+				...mauve,
+				...violet,
+			},// toolbar colors for now @TODO: check later
+    },
   },
   plugins: [],
 }

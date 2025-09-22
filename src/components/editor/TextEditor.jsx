@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { Button } from "../ui/button";
 import { useCallback } from "react";
-import extensions from "./extensions";
-
+import { EditorProvider, extensions, Separator, ToolbarDemo, ToolbarTipTap } from "./extensions";
 
 export default function NotionEditor() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,7 +41,7 @@ export default function NotionEditor() {
     return () => editor.off("transaction", handleTransaction);
   }, [editor]);
 
-  //Image
+  //Image @TODO: move this to a separate file, and make it disappear on click outside
   const addImage = useCallback(() => {
     const url = window.prompt('URL')
 
@@ -60,10 +59,15 @@ export default function NotionEditor() {
           <h1 className="text-3xl font-bold">📄 Blog Page</h1>
         </div>
 
+        <EditorProvider editor={ editor }>
+       {/*  <ToolbarDemo editor={editor} /> */} {/* @TODO: this was replaced, remove after testing */}
+        <ToolbarTipTap/>
+        </EditorProvider>
+
         <div className="space-y-2">
           <EditorContent editor={editor} />
         </div>
-
+        {/* @TODO: sort and move this / meunu else were */}
         {menuOpen && <div className="absolute bg-white shadow p-2 rounded">
           <Button onClick={addImage} variant="outline" size="sm">Add Image</Button>
         </div>}

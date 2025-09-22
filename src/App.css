@@ -1,7 +1,17 @@
+/* 1 First: your own SCSS imports *//* Check these scss ⬇️ */
+@import './styles/_variables.scss';
+@import './styles/_keyframe-animations.scss';
+
+/* 2️ Then Tailwind layers */
 @import "tailwindcss/theme" layer(theme);
 @import "tailwindcss/utilities" layer(utilities);
+
+/* 3️ Then plugins */
 @import "tw-animate-css";
+
+/* 4 Then custom variants */
 @custom-variant dark (&:is(.dark *));
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

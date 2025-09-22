@@ -80,8 +80,9 @@ function App() {
             <Route path="/admin/blog/:id" element={<AdminBlogView />} />
 
             <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/test" element={<TestSidebar />} />
-            <Route path="/blog" element={<TextEditor />} />
+            <Route element={<TestSidebar />}>
+              <Route path="/blog" element={<TextEditor />} />
+            </Route>
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />
