@@ -11,7 +11,7 @@ import Footer from '@/components/Footer.jsx'
 function ExplorePage() {
   return (
     <>
-        <Navbar><Input/></Navbar>  {/* @TODO: ui adject */}
+    <Navbar><Input/></Navbar>  {/* @TODO: ui adject */}
     {/* Hero */}
     <Hero/>
     {/* Popular Category */}   

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
-import { Plus, User, FileText, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Plus, User, FileText, Settings, LogOut, ChevronDown, Shield, Home, } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar({children}) {
@@ -23,6 +23,7 @@ export default function Navbar({children}) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuOpen]);
+  
 
   return (
     <header className="flex justify-between items-center h-16 border-b border-border px-6 bg-chart-2/80 backdrop-blur-md sticky top-0 z-50">

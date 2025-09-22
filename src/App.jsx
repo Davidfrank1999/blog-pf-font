@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import UserBlogView from "./pages/UserBlogView";
 import ExplorePage from "./pages/ReaderView/ExplorePage";
 import TestSidebar from "./pages/testSidebar";
-
+import TextEditor from "./components/editor/TextEditor";
 
 function App() {
   const { user, loading } = useAuth();
@@ -81,6 +81,7 @@ function App() {
 
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/test" element={<TestSidebar />} />
+            <Route path="/blog" element={<TextEditor />} />
 
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" replace />} />

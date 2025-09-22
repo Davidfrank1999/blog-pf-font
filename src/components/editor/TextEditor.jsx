@@ -1,28 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Paragraph from "@tiptap/extension-paragraph";
-import DraggableBlock from "./elements/DraggableBlock";
-import Image from "@tiptap/extension-image";
+import { useEditor, EditorContent } from "@tiptap/react";
 import { Button } from "../ui/button";
-import {useCallback } from "react";
+import { useCallback } from "react";
+import extensions from "./extensions";
 
 
 export default function NotionEditor() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image,
-      Paragraph.extend({
-        addNodeView() {
-          return ReactNodeViewRenderer(DraggableBlock);
-        },
-      }),
-    ],
+    extensions: extensions,
     content: `<h1>My Blog Page</h1>
               <p>Click here to start writing...</p>`,
     editorProps: {
