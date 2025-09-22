@@ -4,19 +4,20 @@ import Paragraph from "@tiptap/extension-paragraph";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { Separator } from "@/components/tiptap-ui-primitive/separator";
 
-import DraggableBlock from "./DraggableBlock";
+
 import ToolbarDemo from "./ToolbarDemo";
 import ToolbarTipTap from "./ToolbarTipTap";
 
 import { EditorProvider } from "./EditorContext";
+import TextAlign from "@tiptap/extension-text-align";
+import { DraggableBlockNode } from "./customNodes/DraggableBlockNode.js";
 
 const extensions = [
   StarterKit,
   Image,
-  Paragraph.extend({
-    addNodeView() {
-      return ReactNodeViewRenderer(DraggableBlock);
-    },
+  DraggableBlockNode,
+  TextAlign.configure({
+    types: ['heading', 'paragraph', 'draggableBlock'], // allow alignment for these node types
   }),
 ];
 

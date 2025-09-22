@@ -11,17 +11,14 @@ import {
   Bold,
   Italic,
 } from "lucide-react";
-import AlignButton from './ToolConponents/AlignButton';
-import BoldButton from './ToolConponents/BoldButton';
+import AlignButton from './ToolComponents/AlignButton';
+import BoldButton from './ToolComponents/BoldButton';
 
 //@TODO: change UI design later
 export default function ToolbarTipTap() {
   return (
     <Toolbar variant="floating" className="fixed bottom-4 right-4">
       <ToolbarGroup>
-        {/* <Button variant="outline" data-style="ghost">
-          <Bold />
-        </Button> */}
         <BoldButton />
       
         {/* @TODO: Align function not working check */}

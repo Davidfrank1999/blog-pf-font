@@ -60,8 +60,8 @@ export default function NotionEditor() {
         </div>
 
         <EditorProvider editor={ editor }>
-       {/*  <ToolbarDemo editor={editor} /> */} {/* @TODO: this was replaced, remove after testing */}
-        <ToolbarTipTap/>
+          {/*  <ToolbarDemo editor={editor} /> */} {/* @TODO: this was replaced, remove after testing */}
+          <ToolbarTipTap/>
         </EditorProvider>
 
         <div className="space-y-2">

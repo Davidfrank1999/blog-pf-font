@@ -9,7 +9,6 @@ function BoldButton() {
   const handleClick = () => {
     if (!editor) return;
     editor.chain().focus().toggleBold().run();
-    console.log("Bold button clicked");
   };
 
   return (
