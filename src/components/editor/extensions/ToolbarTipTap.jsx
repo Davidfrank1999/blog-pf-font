@@ -1,5 +1,5 @@
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from '@/components/tiptap-ui-primitive/toolbar'
-import { TextAlignButton } from '@/components/tiptap-ui/text-align-button';
+
 import { Button } from '@/components/ui/button'
 import { ToggleGroup } from '@radix-ui/react-toggle-group';
 import {
@@ -10,9 +10,12 @@ import {
   Space,
   Bold,
   Italic,
+  Underline,
 } from "lucide-react";
 import AlignButton from './ToolComponents/AlignButton';
 import BoldButton from './ToolComponents/BoldButton';
+import ItalicsButton from './ToolComponents/ItalicsButton';
+import { MarkButton } from '@/components/tiptap-ui/mark-button';
 
 //@TODO: change UI design later
 export default function ToolbarTipTap() {
@@ -28,14 +31,13 @@ export default function ToolbarTipTap() {
          <AlignButton alignment="right" />
         </ToggleGroup>
         
-        <Button variant="outline" data-style="ghost">
-          <Italic/>
-        </Button>
+        <ItalicsButton />
       </ToolbarGroup>
 
       <ToolbarSeparator />
 
       <ToolbarGroup>
+        <MarkButton type="underline" icon={<Underline />} tooltip="Underline" />
         <Button variant="outline" data-style="ghost">Format</Button>
       </ToolbarGroup>
 
