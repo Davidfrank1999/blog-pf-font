@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { getBlogs } from "@/services/blogServices";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import AdBanner from "@/components/AdBanner";
+import AdBanner from "@/components/ads/AdBanner";
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState([]);

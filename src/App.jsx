@@ -15,6 +15,7 @@ import UserBlogView from "./pages/UserBlogView";
 import ExplorePage from "./pages/ReaderView/ExplorePage";
 import TestSidebar from "./pages/testSidebar";
 import TextEditor from "./components/editor/TextEditor";
+import BlogReadView from "./pages/ReaderView/BlogReadView";
 
 function App() {
   const { user, loading } = useAuth();
@@ -80,6 +81,7 @@ function App() {
             <Route path="/admin/blog/:id" element={<AdminBlogView />} />
 
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/blogread" element={<BlogReadView />} />
             <Route element={<TestSidebar />}>
               <Route path="/blog" element={<TextEditor />} />
             </Route>
