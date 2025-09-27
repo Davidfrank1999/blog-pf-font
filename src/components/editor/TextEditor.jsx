@@ -5,14 +5,16 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { Button } from "../ui/button";
 import { useCallback } from "react";
 import { EditorProvider, extensions, Separator, ToolbarDemo, ToolbarTipTap } from "./extensions";
+import { Input } from "../ui/input";
 
-export default function NotionEditor() {
+export default function NotionEditor({initialData, blogId}) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [excerpt, setExcerpt] = useState(initialData?.excerpt || "");
 
   const editor = useEditor({
     extensions: extensions,
-    content: `<h1>My Blog Page</h1>
-              <p>Click here to start writing...</p>`,
+    content: initialData?.content ? JSON.parse(initialData.content) : `<p>Start writing...</p>`,
     editorProps: {
       attributes: {
         class: "prose prose-slate focus:outline-none",
@@ -55,11 +57,13 @@ export default function NotionEditor() {
   return (
     <div className="min-h-screen bg-gray-50 p-8 flex justify-center">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-md p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">📄 Blog Page</h1>
+        {/* Title */}
+        <div className="mb-4">
+          <Input placeholder="Blog Title" value={title} onChange={e => setTitle(e.target.value)} />
+          <Input placeholder="excerpt" value={excerpt} onChange={e => setExcerpt(e.target.value)} />
         </div>
 
-        <EditorProvider editor={ editor }>
+        <EditorProvider editor={ editor }  blogId={blogId} title={title} setTitle={setTitle} excerpt={excerpt} setExcerpt={setExcerpt} >
           {/*  <ToolbarDemo editor={editor} /> */} {/* @TODO: this was replaced, remove after testing */}
           <ToolbarTipTap/>
         </EditorProvider>

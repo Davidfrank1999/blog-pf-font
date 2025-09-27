@@ -22,22 +22,26 @@ export default function DashboardPage() {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const data = await getBlogs({
+        const res = await getBlogs({
           tag: tagFilter !== "all" ? tagFilter : undefined,
           search: debouncedSearch || undefined,
         });
-        setPosts(data);
+
+        // Extract the array
+        setPosts(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("❌ Failed to fetch blogs", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchBlogs();
+  fetchBlogs();
   }, [tagFilter, debouncedSearch]);
 
+
   // 🔹 Collect unique tags
-  const tags = Array.from(new Set(posts.flatMap((p) => p.tags || [])));
+  const tags = Array.from(new Set((posts || []).flatMap((p) => p.tags || [])));
+
 
   if (loading) {
     return (

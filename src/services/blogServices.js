@@ -3,7 +3,7 @@ import api from "./api";
 
 // 🔹 Get all blogs (with optional search + tag filters)
 export const getBlogs = async (params = {}) => {
-  const res = await api.get("/blogs", { params });
+  const res = await api.get("/blogs/getBlogs", { params });
   return res.data;
 };
 
@@ -14,14 +14,27 @@ export const getBlog = async (slugOrId) => {
 };
 
 // 🔹 Create blog
-export const createBlog = async (data) => {
-  const res = await api.post("/blogs", data);
+export const createBlog = async (data, file) => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(data));
+  if (file) formData.append("file", file);
+
+  const res = await api.post("/blogs/createBlog", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data;
 };
 
-// 🔹 Update blog
-export const updateBlog = async (id, data) => {
-  const res = await api.put(`/blogs/${id}`, data);
+
+// 🔹 Update blog (similar pattern)
+export const updateBlog = async (id, data, file) => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(data));
+  if (file) formData.append("file", file);
+
+  const res = await api.put(`/blogs/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data;
 };
 

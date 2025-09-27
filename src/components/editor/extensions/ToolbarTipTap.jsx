@@ -16,6 +16,7 @@ import AlignButton from './ToolComponents/AlignButton';
 import BoldButton from './ToolComponents/BoldButton';
 import ItalicsButton from './ToolComponents/ItalicsButton';
 import { MarkButton } from '@/components/tiptap-ui/mark-button';
+import SaveButton from './ToolComponents/saveButton';
 
 //@TODO: change UI design later
 export default function ToolbarTipTap() {
@@ -32,6 +33,7 @@ export default function ToolbarTipTap() {
         </ToggleGroup>
         
         <ItalicsButton />
+        <SaveButton />
       </ToolbarGroup>
 
       <ToolbarSeparator />
