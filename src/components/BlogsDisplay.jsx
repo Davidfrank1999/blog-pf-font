@@ -6,30 +6,20 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { fetchBlogsByTags } from "@/services/documentServices";
+import { useEffect, useState } from "react";
 
 export default function BlogsDisplay() {
-  const topics = [
-    {
-      title: "Science",
-      cards: [
-        { title: "Card 1", description: "Science content" },
-        { title: "Card 2", description: "Science content" },
-        { title: "Card 3", description: "Science content" },
-        { title: "Card 4", description: "Science content" },
-        { title: "Card 5", description: "Science content" },
-        { title: "Card 6", description: "Science content" },
-      ],
-    },
-    {
-      title: "Technology",
-      cards: [
-        { title: "Card 1", description: "Tech content" },
-        { title: "Card 2", description: "Tech content" },
-        { title: "Card 3", description: "Tech content" },
-        { title: "Card 4", description: "Tech content" },
-      ],
-    },
-  ];
+  const [topics, setTopics] = useState([]);
+  const tags = ["Technology", "Health", "food", "Lifestyle"];
+
+   useEffect(() => {
+    const loadBlogs = async () => {
+      const data = await fetchBlogsByTags(tags);
+      setTopics(data);
+    };
+    loadBlogs();
+  }, []);
 
   return (
     <div className="space-y-10 px-8">

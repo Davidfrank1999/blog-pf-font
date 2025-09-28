@@ -4,23 +4,23 @@ import { Button } from "@/components/ui/button";
 import { createBlog, updateBlog } from "@/services/blogServices";
 
 function SaveButton() {
-  const { editor, blogId, title, excerpt } = useEditorContext();
+  const { editor, blogId, title, excerpt, tags } = useEditorContext();
   const [loading, setLoading] = useState(false);
-  
+ 
   const handleSave = useCallback(async () => {
     if (!editor) return;
     setLoading(true);
 
     const content = editor.getJSON();
-    const tags = [];
-    const blogData = { title, excerpt, content, tags };
 
+    const blogData = { title, excerpt, content, tags };
+    console.log("💾 Saving blog data:", blogData);
     try {
       if (blogId) {
         await updateBlog(blogId, blogData);
         alert("✅ Blog updated successfully!");
       } else {
-        await createBlog(blogData);
+        await createBlog(blogData); //@TODO: handle image file
         alert("✅ Blog created successfully!");
       }
     } catch (err) {
@@ -29,7 +29,7 @@ function SaveButton() {
     } finally {
       setLoading(false);
     }
-  }, [editor, blogId, , title, excerpt]);
+  }, [editor, blogId , title, excerpt, tags]);
 
   return (
     <Button

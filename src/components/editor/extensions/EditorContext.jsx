@@ -2,9 +2,9 @@ import React, { createContext, useContext } from "react";
 
 const EditorContext = createContext(null);
 
-export const EditorProvider = ({ editor, blogId, title, setTitle, excerpt, setExcerpt, children }) => {
+export const EditorProvider = ({ editor, blogId, title, setTitle, excerpt, setExcerpt,tags, setTags, children }) => {
   return (
-    <EditorContext.Provider value={{editor, blogId, title, setTitle, excerpt, setExcerpt, }}>
+    <EditorContext.Provider value={{editor, blogId, title, setTitle, excerpt, setExcerpt,tags, setTags }}>
       {children}
     </EditorContext.Provider>
   );

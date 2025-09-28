@@ -12,11 +12,10 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         if (accessToken) {
-            console.log("Fetching profile with token:", accessToken);
             getProfile(accessToken)
             .then((res) => setUser(res))
-            .catch(() => {
-            localStorage.removeItem("accessToken");
+            .catch((err) => {
+            console.error("Failed to fetch profile:", err);
             setUser(null);
         })
         .finally(() => setLoading(false));
