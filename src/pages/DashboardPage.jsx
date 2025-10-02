@@ -52,7 +52,7 @@ export default function DashboardPage() {
       </DashboardLayout>
     );
   }
-
+// end here , need to be edited
   return (
     <DashboardLayout breadcrumb={{ parent: "Home", parentLink: "/", current: "Dashboard" }}>
       <h1 className="text-3xl font-bold mb-6 tracking-tight text-chart-2">
