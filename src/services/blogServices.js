@@ -1,4 +1,5 @@
 // src/services/blogServices.js
+import { data } from "react-router-dom";
 import api from "./api";
 
 // 🔹 Get all blogs (with optional search + tag filters)
@@ -8,8 +9,8 @@ export const getBlogs = async (params = {}) => {
 };
 
 // 🔹 Get single blog by slug or ID
-export const getBlog = async (slugOrId) => {
-  const res = await api.get(`/blogs/${slugOrId}`);
+export const getBlogbyId = async (blogIdOrSlug) => {
+  const res = await api.get(`/blogs/blogRead/${blogIdOrSlug}`);
   return res.data;
 };
 

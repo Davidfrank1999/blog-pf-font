@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import {
   SidebarProvider,
   Sidebar,
@@ -28,6 +28,9 @@ import {
 import Navbar from "@/components/Navbar"
 import AdBanner from "@/components/ads/AdBanner"
 import BlogContent from "@/components/BlogContent"
+import { getBlogbyId } from "@/services/blogServices"
+import { useParams } from "react-router-dom"
+import { processEditorContent } from "@/utils/editorUtils"
 
 // temp data
 const data = {
@@ -93,7 +96,22 @@ const data = {
   ],
 }
 
+
+
 function BlogReadView() {
+  const { id } = useParams();
+  const [blog, setBlog] = useState(null);
+
+  useEffect(() => {
+    const loadBlog = async () => {
+      const BlogData = await  getBlogbyId(id);
+      setBlog(BlogData.data);
+      console.log("▶️ BLog from back",BlogData);
+    };
+    loadBlog();
+  }, [id]);
+  if (!blog) return <div className="p-10">Loading...</div>;
+
   return (
     <>
       {/* Top Navbar */}
@@ -116,7 +134,7 @@ function BlogReadView() {
               <NavMain items={data.navMain} />
               <NavProjects projects={data.projects} />
               <AdBanner />
-            </SidebarContent>
+            </SidebarContent> 
 
             <SidebarFooter>
               {/* Footer actions */}
@@ -125,8 +143,20 @@ function BlogReadView() {
 
           {/* Main content area */}
           <SidebarInset className="flex-1 ml-0 md:ml-64 p-6 transition-all duration-300 overflow-y-auto min-h-screen">
-            <div className="bg-amber-800 w-full h-32"></div>
-            <BlogContent />
+             {blog && (
+                <>
+                  <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
+                  <p className="text-sm text-muted-foreground mb-6">
+                    By {blog.author?.name || "Unknown"} —{" "}
+                    {new Date(blog.updatedAt).toLocaleDateString()}
+                  </p>
+                  <div
+                    className="prose max-w-none break-words"
+                    style={{wordBreak: "break-word", overflowWrap: "break-word"}}
+                    dangerouslySetInnerHTML={{ __html: processEditorContent(blog.content)}}
+                  />
+                </>
+              )}
           </SidebarInset>
 
         </div>

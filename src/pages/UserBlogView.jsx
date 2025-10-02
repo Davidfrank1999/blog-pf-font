@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getBlog, likeBlog, commentBlog } from "@/services/blogServices";
+import { getBlogbyId, likeBlog, commentBlog } from "@/services/blogServices";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import AdBanner from "@/components/ads/AdBanner";
 
@@ -13,8 +13,8 @@ export default function UserBlogView() {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        // ✅ getBlog now works with slug or ID
-        const data = await getBlog(slug);
+        // ✅ getBlogbyId now works with slug or ID
+        const data = await getBlogbyId(slug);
         setBlog(data);
       } catch (err) {
         console.error("❌ Failed to fetch blog:", err);

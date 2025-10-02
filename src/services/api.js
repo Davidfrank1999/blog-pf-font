@@ -1,18 +1,17 @@
 // src/services/api.js
 import axios from "axios";
 
-// ⚡ Use your actual backend port (check your server.js/app.js)
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 10000, // shorter timeout for faster fail
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// ✅ Attach token automatically
+// Attach access token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
   if (token) {
@@ -22,23 +21,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-
-// --- Track refreshing state to avoid duplicate requests ---
+// --- Refresh token logic ---
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
+    if (error) prom.reject(error);
+    else prom.resolve(token);
   });
   failedQueue = [];
 };
 
-// --- Handle expired tokens globally ---
 api.interceptors.response.use(
   (res) => res,
   async (err) => {
@@ -49,36 +43,40 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       if (isRefreshing) {
-        // Queue failed requests until refresh finishes
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = "Bearer " + token;
-            return api(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
+        }).then((token) => {
+          // Use the token from processQueue
+          return api({ 
+            ...originalRequest, 
+            headers: { 
+              ...originalRequest.headers, 
+              Authorization: `Bearer ${token}` 
+            } 
+          });
+        });
       }
 
       isRefreshing = true;
 
       try {
-        // Call refresh endpoint
         const res = await axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
-
         const newAccessToken = res.data.accessToken;
 
-        // Store new token
+        // Save new token
         localStorage.setItem("accessToken", newAccessToken);
-
-        // Update default headers
-        api.defaults.headers.common["Authorization"] = "Bearer " + newAccessToken;
+        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);
 
-        // Retry failed request
-        originalRequest.headers["Authorization"] = "Bearer " + newAccessToken;
-        return api(originalRequest);
+        // Retry original request
+        return api({ 
+          ...originalRequest, 
+          headers: { 
+            ...originalRequest.headers, 
+            Authorization: `Bearer ${newAccessToken}` 
+          } 
+        });
       } catch (refreshError) {
         processQueue(refreshError, null);
         localStorage.removeItem("accessToken");

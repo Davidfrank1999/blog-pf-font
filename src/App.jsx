@@ -41,6 +41,7 @@ function App() {
   };
 
   return (
+   
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
@@ -81,7 +82,7 @@ function App() {
             <Route path="/admin/blog/:id" element={<AdminBlogView />} />
 
             <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/blogread" element={<BlogReadView />} />
+            <Route path="/blogRead/:id" element={<BlogReadView />} />
             <Route element={<TestSidebar />}>
               <Route path="/blog" element={<TextEditor />} />
             </Route>
@@ -91,7 +92,9 @@ function App() {
         </Routes>
       </motion.div>
     </AnimatePresence>
+   
   );
+  
 }
 
 export default App;

@@ -4,10 +4,13 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
+  CardAction,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { fetchBlogsByTags } from "@/services/documentServices";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function BlogsDisplay() {
   const [topics, setTopics] = useState([]);
@@ -31,14 +34,24 @@ export default function BlogsDisplay() {
           {/* Cards grid: 2 rows */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {topic.cards.map((card, idx) => (
-              <Card key={idx} className="p-16 min-w-48">
+              <Link key={idx} to={`/blogRead/${card._id}`} className="no-underline">
+              <Card key={idx} className="p-5 min-w-48">
                 <CardHeader>
                   <CardTitle>{card.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>{card.description}</CardDescription>
+                  <CardDescription>{card.excerpt}</CardDescription>
                 </CardContent>
+                <CardFooter>
+                  <CardAction>
+                    <div>
+                      {card.author.name} - {new Date(card.updatedAt).toLocaleDateString()}
+                    </div>
+                  </CardAction>
+                </CardFooter>
+                
               </Card>
+              </Link>
             ))}
           </div>
 
