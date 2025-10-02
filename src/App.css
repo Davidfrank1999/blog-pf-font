@@ -1,7 +1,17 @@
+/* 1 First: your own SCSS imports *//* Check these scss ⬇️ */
+@import './styles/_variables.scss';
+@import './styles/_keyframe-animations.scss';
+
+/* 2️ Then Tailwind layers */
 @import "tailwindcss/theme" layer(theme);
 @import "tailwindcss/utilities" layer(utilities);
+
+/* 3️ Then plugins */
 @import "tw-animate-css";
+
+/* 4 Then custom variants */
 @custom-variant dark (&:is(.dark *));
+
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -74,6 +84,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-width: 16rem;      /* full width */
+  --sidebar-width-icon: 4rem;  /* collapsed icon-only width */
+  --sidebar-collapsed-extra: 1rem;
 }
 
 .dark {
@@ -115,6 +128,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
+
+

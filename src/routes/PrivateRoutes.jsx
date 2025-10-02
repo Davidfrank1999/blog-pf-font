@@ -1,14 +1,13 @@
-import { AuthContext } from "@/context/AuthContext";
 import { Navigate, Outlet } from "react-router-dom";
-import { useContext } from "react";
+import { useAuth } from "@/context/AuthContext"; // ✅ use hook
 
 const PrivateRoute = () => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-chart-2 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }

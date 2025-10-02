@@ -2,7 +2,7 @@ import React from 'react'
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react'
 
 
-const DraggableBlock = () => {
+const DraggableBlockComponent = () => {
   return (
     <NodeViewWrapper className="flex items-start gap-2 group">
       {/* Drag handle */}
@@ -19,4 +19,4 @@ const DraggableBlock = () => {
   )
 }
 
-export default DraggableBlock
+export default DraggableBlockComponent;

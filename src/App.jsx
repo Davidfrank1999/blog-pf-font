@@ -1,32 +1,50 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom"
-import "./App.css"
-import { useAuth } from "./context/AuthContext"
-import DashboardPage from "./pages/DashboardPage"
-import CreateBlog from "./components/creatBlog"
-import LoginPage from "./pages/LoginPage"
-import SignupPage from "./pages/SignupPage"
-import PrivateRoute from "./routes/PrivateRoutes"
-import { AnimatePresence, motion } from "framer-motion"
-
+// src/App.jsx
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import "./App.css";
+import { useAuth } from "./context/AuthContext";
+import DashboardPage from "./pages/DashboardPage";
+import CreateBlog from "./components/creatBlog";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import PrivateRoute from "./routes/PrivateRoutes";
+import AdminRoute from "./routes/AdminRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminBlogView from "./pages/AdminBlogView";
+import { AnimatePresence, motion } from "framer-motion";
+import UserBlogView from "./pages/UserBlogView";
+import ExplorePage from "./pages/ReaderView/ExplorePage";
+import TestSidebar from "./pages/testSidebar";
+import TextEditor from "./components/editor/TextEditor";
+import BlogReadView from "./pages/ReaderView/BlogReadView";
 
 function App() {
-  const { user, loading } = useAuth()
-  const location = useLocation()
+  const { user, loading } = useAuth();
+  const location = useLocation();
 
-  // ✅ Prevent flashing login by waiting until auth state is restored
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-chart-2 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
+  // ✅ Redirect function
+  const redirectAfterLogin = () => {
+    if (user?.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    }
+    if (user) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    return <Navigate to="/login" replace />;
+  };
+
   return (
+   
     <AnimatePresence mode="wait">
       <motion.div
-        key={location.pathname} // animate route changes
+        key={location.pathname}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
@@ -34,33 +52,49 @@ function App() {
         className="min-h-screen"
       >
         <Routes location={location} key={location.pathname}>
-          {/* Default route → go to dashboard if logged in, otherwise login */}
-          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+          {/* Root */}
+          <Route path="/" element={redirectAfterLogin()} />
 
-          {/* Public Routes */}
+          {/* Login / Signup */}
           <Route
             path="/login"
-            element={user ? <Navigate to="/dashboard" /> : <LoginPage />}
+            element={user ? redirectAfterLogin() : <LoginPage />}
           />
           <Route
             path="/signup"
-            element={user ? <Navigate to="/dashboard" /> : <SignupPage />}
+            element={user ? redirectAfterLogin() : <SignupPage />}
           />
 
-          {/* Protected Routes */}
+          {/* User Routes */}
           <Route element={<PrivateRoute />}>
-            {/* <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/creatblog" element={<CreateBlog />} /> */}
+            
           </Route>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/creatblog" element={<CreateBlog />} />
+            <Route path="/creatblog" element={<CreateBlog />} />
+            <Route path="/blogs/:slug" element={<UserBlogView />} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" />} />
+
+          {/* Admin Routes */}
+          <Route element={<AdminRoute />}>
+            
+          </Route>
+          <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/blog/:id" element={<AdminBlogView />} />
+
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/blogRead/:id" element={<BlogReadView />} />
+            <Route element={<TestSidebar />}>
+              <Route path="/blog" element={<TextEditor />} />
+            </Route>
+
+          {/* Catch all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
-  )
+   
+  );
+  
 }
 
-export default App
+export default App;
